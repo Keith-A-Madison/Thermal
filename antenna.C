@@ -12,7 +12,7 @@ class Antenna{
 
 	long int samplingRate;
 
-    std::random_device rd;
+    	std::random_device rd;
 	std::mt19937 gen;
 
 public:
