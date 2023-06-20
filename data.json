@@ -1,0 +1,14 @@
+{
+
+        "temperature" : 260,
+        "resistance" : 50,
+        "bandwidth" : 500000000,
+        "gain" : 50,
+        "noiseFig": 1.5,
+        "samplingRate": 40,
+        "windowSize": 0.00000017,
+        "writeDelay": 0.000001,
+        "channelThreshold": 3,
+        "channels" : 20
+
+}
