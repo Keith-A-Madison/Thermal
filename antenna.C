@@ -1,3 +1,7 @@
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/dynamic_bitset.hpp>
+
 #include <vector>
 #include <random>
 #include <queue>
@@ -17,7 +21,7 @@ class Antenna{
 
 public:
 	Antenna(const char *filename);
-	int triggerRate(double threshold, double temperature);
+	std::uint64_t triggerRate(double threshold, double temperature);
 
 	double vrms;
 
@@ -45,22 +49,33 @@ Antenna::Antenna(const char *filename){
 
 }
 
-int Antenna::triggerRate(double threshold, double temperature){
+std::uint64_t Antenna::triggerRate(double threshold, double temperature){
 
 	std::normal_distribution<double> dist(0, vrms = _vrms * sqrt(temperature));
+	std::priority_queue<double, std::vector<double>, std::greater<double>> pq;
 
 	std::vector<boost::dynamic_bitset<>> 
 		window(channels, boost::dynamic_bitset<>(windowSize));
 
+	auto takeSample = [&](int index, boost::dynamic_bitset<> &channel){
+
+		double sample = fabs(dist(gen));
+		channel.set(index, sample > threshold);
+
+		if(pq.size() < channelThreshold){ pq.push(sample); }
+		else if(sample > pq.top()){ pq.pop(); pq.push(sample); }
+
+	};
+
 	auto clear = [&](){
 		for(auto &channel: window)
 		        for(int i = 0; i < windowSize; ++i)
-        	            channel.set(i, fabs(dist(gen)) > threshold);
+				takeSample(i, channel);	
 	};
 
 	clear();
 
-	int numContributingChannels = 0, numTriggers = 0;
+	std::uint64_t numContributingChannels = 0, numTriggers = 0;
 
 	for(int i = 0, imod = 0; i < samplingRate/1000; ++i, imod = (imod + 1) % windowSize){
 
@@ -81,7 +96,7 @@ int Antenna::triggerRate(double threshold, double temperature){
 		}
 
 		for(auto &channel: window)
-			channel.set(imod, fabs(dist(gen)) > threshold);
+			takeSample(imod, channel);	
 		
 	}
 
@@ -91,10 +106,9 @@ int Antenna::triggerRate(double threshold, double temperature){
 
 int main(int argc, char *argv[]){
 
-	Antenna antenna(argv[4]);
-	double temperature = atof(argv[1]), threshold = atof(argv[2]);
+	Antenna antenna(argv[1]);
+	double temperature = atof(argv[2]), threshold = atof(argv[3]);
 
-	std::cout << "V_{rms}: " << antenna.vrms << 
-  " Trigger Rate: " << antenna.triggerRate(threshold, temperature) << "\n"; 
+	std::cout << "V_{rms}: " << antenna.vrms << " Trigger Rate: " << antenna.triggerRate(threshold, temperature) << "\n"; 
 
 }
