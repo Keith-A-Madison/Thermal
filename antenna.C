@@ -23,7 +23,7 @@ public:
 	Antenna(const char *filename);
 	std::uint64_t triggerRate(double threshold, double temperature);
 
-	double vrms;
+	double vrms, highestChanSNR;
 
 };
 
@@ -75,9 +75,10 @@ std::uint64_t Antenna::triggerRate(double threshold, double temperature){
 
 	clear();
 
+	highestChanSNR = 0;
 	std::uint64_t numContributingChannels = 0, numTriggers = 0;
 
-	for(int i = 0, imod = 0; i < samplingRate/1000; ++i, imod = (imod + 1) % windowSize){
+	for(int i = 0, imod = 0; i < samplingRate; ++i, imod = (imod + 1) % windowSize){
 
 		numContributingChannels = 0;
 
@@ -86,6 +87,8 @@ std::uint64_t Antenna::triggerRate(double threshold, double temperature){
 				++numContributingChannels;
 
 		if(numContributingChannels > channelThreshold){
+
+			highestChanSNR += pq.top() / (2 * vrms);
 
 			++numTriggers;
 			i += writeDelay + imod;
@@ -99,6 +102,8 @@ std::uint64_t Antenna::triggerRate(double threshold, double temperature){
 			takeSample(imod, channel);	
 		
 	}
+
+	highestChanSNR /= numTriggers;
 
 	return numTriggers;
 
