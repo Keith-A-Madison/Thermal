@@ -2,54 +2,15 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/dynamic_bitset.hpp>
 
+#include <functional>
+#include <iostream>
 #include <vector>
 #include <random>
 #include <queue>
 
-#include <iostream>
+#include "antenna.h"
 
-class Antenna{
-
-	double _vrms;
-	int windowSize, channels, 
-		channelThreshold, writeDelay;
-
-	long int samplingRate;
-
-    	std::random_device rd;
-	std::mt19937 gen;
-
-public:
-	Antenna(const char *filename);
-	std::uint64_t triggerRate(double threshold, double temperature);
-
-	double vrms, highestChanSNR;
-
-};
-
-Antenna::Antenna(const char *filename){
-
-	gen.seed(rd());
-
-	boost::property_tree::ptree root;
-	boost::property_tree::read_json(filename,root);
-
-	_vrms = sqrt(5.52E-23 * root.get<double>("resistance")  * 
-			       root.get<double>("bandwidth"));
-
-	_vrms *= root.get<double>("gain") * 
-			pow(10, root.get<double>("noiseFig") / 10);
-
-	channelThreshold = root.get<double>("channelThreshold");
-
-	samplingRate = root.get<int>("samplingRate")  * 1E+9;
-	windowSize   = root.get<double>("windowSize") * samplingRate;
-	writeDelay   = root.get<double>("writeDelay") * samplingRate;
-	channels     = root.get<int>("channels");
-
-}
-
-std::uint64_t Antenna::triggerRate(double threshold, double temperature){
+std::uint64_t Antenna::getTriggerRate(double threshold, double temperature){
 
 	std::normal_distribution<double> dist(0, vrms = _vrms * sqrt(temperature));
 	std::priority_queue<double, std::vector<double>, std::greater<double>> pq;
@@ -106,14 +67,5 @@ std::uint64_t Antenna::triggerRate(double threshold, double temperature){
 	highestChanSNR /= numTriggers;
 
 	return numTriggers;
-
-}
-
-int main(int argc, char *argv[]){
-
-	Antenna antenna(argv[1]);
-	double temperature = atof(argv[2]), threshold = atof(argv[3]);
-
-	std::cout << "V_{rms}: " << antenna.vrms << " Trigger Rate: " << antenna.triggerRate(threshold, temperature) << "\n"; 
 
 }
