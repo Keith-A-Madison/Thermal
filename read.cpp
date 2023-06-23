@@ -10,9 +10,7 @@
 
 #include "antenna.h"
 
-Antenna::Antenna(const char* descriptor, std::function<double(double)> freqResponse = nullptr){
-
-	gen.seed(rd());
+Antenna::Antenna(const char* descriptor, std::function<double(double)> freqResponse): gen(rd()){
 
 try{
 
