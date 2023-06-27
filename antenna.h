@@ -18,13 +18,14 @@ public:
 		std::function<double(double)> freqResponse = nullptr);
 
 	std::uint64_t getTriggerRate(double thresh, double temp);
+	double	      getThermalNoisePower(double temp);
 	
 	double vrms, highestChanSNR;
 
 private:
-	double _vrms;
+	double noiseFig, resistance, gain, bandwidth;
         int windowSize, channels,
-                channelThreshold, writeDelay;
+            channelThreshold, writeDelay;
 
         long int samplingRate;
 
