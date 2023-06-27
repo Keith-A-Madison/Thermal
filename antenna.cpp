@@ -12,7 +12,9 @@
 
 std::uint64_t Antenna::getTriggerRate(double threshold, double temperature){
 
-	std::normal_distribution<double> dist(0, vrms = _vrms * sqrt(temperature));
+	vrms = 2 * sqrt(resistance * getThermalNoisePower(temperature));
+
+	std::normal_distribution<double> dist(0, vrms);
 	std::priority_queue<double, std::vector<double>, std::greater<double>> pq;
 
 	std::vector<boost::dynamic_bitset<>> 
@@ -67,5 +69,11 @@ std::uint64_t Antenna::getTriggerRate(double threshold, double temperature){
 	highestChanSNR /= numTriggers;
 
 	return numTriggers;
+
+}
+
+double Antenna::getThermalNoisePower(double temp){
+
+	return 1.381E-23 * temp * (pow(10, noiseFig/10) * gain * bandwidth + 1);	
 
 }
