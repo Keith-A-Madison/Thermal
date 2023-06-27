@@ -10,8 +10,8 @@ Butterworth::Butterworth(int ordLow, int ordHigh,
 
 double Butterworth::transferFunction(double freq){
 
-	return std::min(std::sqrt(1 / (1 + pow(freq/_fLow, 2 * _ordLow))),	// Low-pass filter
+	return std::min(std::sqrt(1 / (1 + pow(freq/_fLow, 2 * _ordLow))),	// H(f)ₗₒ ₚₐₛₛ = √1/(1 + (f/fₗₒ)²ⁿ)
 			std::sqrt(pow(freq, _ordHigh) / 
-			(pow(freq, _ordHigh) + pow(_fHigh, _ordHigh))));	// High-pass filter
+			(pow(freq, _ordHigh) + pow(_fHigh, _ordHigh))));	// H(f)ₕᵢ ₚₐₛₛ = √ fⁿ / (fⁿ + fₕᵢⁿ)
 
 }
