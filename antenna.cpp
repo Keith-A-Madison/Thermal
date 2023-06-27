@@ -74,6 +74,7 @@ std::uint64_t Antenna::getTriggerRate(double threshold, double temperature){
 
 double Antenna::getThermalNoisePower(double temp){
 
+	// Vᵣₘₛ² = 4RkT{10⁽NFᐟ¹⁰⁾∫ [g(f)]²/(1 + 2𝜋fCR)²df + 1}
 	return 1.381E-23 * temp * (pow(10, noiseFig/10) * gain * bandwidth + 1);	
 
 }
