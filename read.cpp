@@ -34,16 +34,16 @@ try{
 	else
 		throw std::runtime_error("Invalid filter type");
 
-	_vrms  = std::sqrt(5.52E-23 * bandwidth * json.get<double>("resistance"));
-	_vrms *= json.get<double>("gain") * pow(10, json.get<double>("noiseFig") / 10);
-
 	channelThreshold = json.get<double>("channelThreshold");
 	
 	samplingRate = json.get<int>("samplingRate")  * 1E+9;
 	windowSize   = json.get<double>("windowSize") * samplingRate;
 	writeDelay   = json.get<double>("writeDelay") * samplingRate;
 	channels     = json.get<int>("channels");
-	
+
+	resistance   = json.get<double>("resistance");
+	gain	     = json.get<double>("gain");
+	noiseFig     = json.get<double>("noiseFig");
 
 } catch (const boost::property_tree::json_parser::json_parser_error& ex){
 
