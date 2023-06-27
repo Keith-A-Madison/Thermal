@@ -12,6 +12,7 @@
 
 std::uint64_t Antenna::getTriggerRate(double threshold, double temperature){
 
+	// Vᵣₘₛ² = 4RkT{10⁽NFᐟ¹⁰⁾∫ [g(f)]²/(1 + 2𝜋fCR)²df + 1} = 2 √(R × P)
 	vrms = 2 * sqrt(resistance * getThermalNoisePower(temperature));
 
 	std::normal_distribution<double> dist(0, vrms);
@@ -74,7 +75,7 @@ std::uint64_t Antenna::getTriggerRate(double threshold, double temperature){
 
 double Antenna::getThermalNoisePower(double temp){
 
-	// Vᵣₘₛ² = 4RkT{10⁽NFᐟ¹⁰⁾∫ [g(f)]²/(1 + 2𝜋fCR)²df + 1}
+	// P = G_r(kT_aBG_a + N_{lna}) + kT_rB = (1/4R)V_{rms}^2
 	return 1.381E-23 * temp * (pow(10, noiseFig/10) * gain * bandwidth + 1);	
 
 }
