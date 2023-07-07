@@ -17,7 +17,8 @@ public:
 	Antenna(const char* descriptor,
 		std::function<double(double)> freqResponse = nullptr);
 
-	std::uint64_t getTriggerRate(double thresh, double temp);
+	std::uint64_t getTriggerRateNumerical(double threshold, double temperature);
+	std::uint64_t getTriggerRateProbabilistic(double threshold, double temperature);
 	double	      getThermalNoisePower(double temp);
 	
 	double vrms, highestChanSNR;
