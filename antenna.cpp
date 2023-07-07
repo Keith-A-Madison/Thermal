@@ -33,8 +33,8 @@ std::uint64_t Antenna::getTriggerRateProbabilistic(double threshold, double temp
 
 	double normFactor = std::accumulate(statDistribution.begin(), statDistribution.end(), 0.0);
 	double trigProb   = std::accumulate(statDistribution.begin() + (channelThreshold + 1), statDistribution.end(), 0.0);
-	
-	return 1 / (1 - (trigProb / normFactor));	
+
+	return (windowSize / samplingRate) * (trigProb / normFactor);
 		
 }
 
