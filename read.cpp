@@ -20,8 +20,6 @@ try{
 	double fHigh = json.get<double>("filter.fHigh");
 	double fLow  = json.get<double>("filter.fLow");
 	
-	double bandwidth;
-
 	// Read filter type, and use to compute bandwidth
 	std::string filterType = json.get<std::string>("filter.type");
 
