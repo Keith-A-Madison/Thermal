@@ -10,8 +10,9 @@ public:
 	using func3D = std::function<std::array<double, 3>(std::array<double, 3>)>;
 
 	MonteCarlo(const func3D index, const func1D temp,
-			       const func1D atten, std::array<double, 8> bounds,
-			       int numDir, int numFreq, int numBundle);
+		   const func1D atten, std::array<double, 8> bounds,
+		   int numDir, int numFreq, int numBundle);
+
 	void getSpectralDensity(std::array<double, 3> init);
 
 private:
